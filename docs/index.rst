@@ -1,19 +1,20 @@
 .. include:: ../README.rst
 
+.. module:: atomicwrites
 API
 ===
 
-.. autofunction:: atomicwrites.atomic_write
+.. autofunction:: atomic_write
 
 Low-level API
 -------------
 
-.. autoclass:: atomicwrites.AtomicWriterBase
+.. autoclass:: AtomicWriterBase
    :members: open
 
-.. autoclass:: atomicwrites.PosixAtomicWriter
+.. autoclass:: PosixAtomicWriter
    :members: open
 
-.. class:: atomicwrites.AtomicWriter
+.. class:: AtomicWriter
 
    Automatically selected writer for the current OS.
