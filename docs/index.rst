@@ -1,6 +1,7 @@
 .. include:: ../README.rst
 
 .. module:: atomicwrites
+
 API
 ===
 
@@ -18,3 +19,8 @@ Low-level API
 .. class:: AtomicWriter
 
    Automatically selected writer for the current OS.
+
+License
+-------
+
+.. include:: ../LICENSE
