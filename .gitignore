@@ -3,4 +3,6 @@
 *.pyo
 __pycache__
 *.egg-info
-_build
+docs/_build
+build
+dist
