@@ -14,3 +14,12 @@ def test_atomic_write(tmpdir):
             f.write('haha')
 
     assert fname.read() == 'hoho'
+
+
+def test_teardown(tmpdir):
+    fname = tmpdir.join('ha')
+    with pytest.raises(AssertionError):
+        with atomic_write(str(fname), overwrite=True) as f:
+            assert False
+
+    assert not tmpdir.listdir()
