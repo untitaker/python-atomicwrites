@@ -1,5 +1,7 @@
-import pytest
 from atomicwrites import atomic_write
+
+import pytest
+
 
 def test_atomic_write(tmpdir):
     fname = tmpdir.join('ha')
@@ -12,4 +14,3 @@ def test_atomic_write(tmpdir):
             f.write('haha')
 
     assert fname.read() == 'hoho'
-

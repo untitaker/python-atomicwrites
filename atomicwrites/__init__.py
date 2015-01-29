@@ -35,19 +35,16 @@ class AtomicWriterBase(object):
         '''Clean up all temporary resources.'''
         raise NotImplementedError()
 
-    def _open(self, fileobject):
-        @contextlib.contextmanager
-        def inner():
-            try:
-                with fileobject as f:
-                    yield f
-            except:
-                self.rollback()
-                raise
-            else:
-                self.commit()
-
-        return inner()
+    @contextlib.contextmanager
+    def _open(self, get_fileobject):
+        try:
+            with get_fileobject() as f:
+                yield f
+        except:
+            self.rollback()
+            raise
+        else:
+            self.commit()
 
 
 class PosixAtomicWriter(AtomicWriterBase):
@@ -68,7 +65,8 @@ class PosixAtomicWriter(AtomicWriterBase):
         ``open`` function.
         '''
         self._tmppath = self.get_tmppath()
-        return self._open(codecs.open(self._tmppath, mode=mode, **open_kwargs))
+        get_fobj = lambda: codecs.open(self._tmppath, mode=mode, **open_kwargs)
+        return self._open(get_fobj)
 
     def commit(self):
         if self._overwrite:
