@@ -53,20 +53,20 @@ class PosixAtomicWriter(AtomicWriterBase):
     filesystems. It uses temporary files in the same directory.
     '''
 
-    def get_tmppath(self):
+    def get_fileobject(self, mode):
         '''Return the temporary path to use.'''
         tmpdir = os.path.dirname(self._path)
-        _, tmppath = tempfile.mkstemp(dir=tmpdir)
-        return tmppath
+        f = tempfile.NamedTemporaryFile(mode=mode, dir=tmpdir, delete=False)
+        self._tmppath = f.name
+        print(f)
+        return f
 
     def open(self, mode='w', **open_kwargs):
         '''
         Open the temporary file. Any arguments will be passed on to the builtin
         ``open`` function.
         '''
-        self._tmppath = self.get_tmppath()
-        get_fobj = lambda: codecs.open(self._tmppath, mode=mode, **open_kwargs)
-        return self._open(get_fobj)
+        return self._open(lambda: self.get_fileobject(mode=mode))
 
     def commit(self):
         if self._overwrite:
