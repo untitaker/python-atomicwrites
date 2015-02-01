@@ -3,7 +3,7 @@ import contextlib
 import os
 import tempfile
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 
 class AtomicWriterBase(object):
@@ -58,7 +58,6 @@ class PosixAtomicWriter(AtomicWriterBase):
         tmpdir = os.path.dirname(self._path)
         f = tempfile.NamedTemporaryFile(mode=mode, dir=tmpdir, delete=False)
         self._tmppath = f.name
-        print(f)
         return f
 
     def open(self, mode='w', **open_kwargs):
