@@ -25,7 +25,7 @@ setup(
     author='Markus Unterwaditzer',
     author_email='markus@unterwaditzer.net',
     url='https://github.com/untitaker/python-atomicwrites',
-    description='Atomic file writes on POSIX',
+    description='Atomic file writes.',
     license='MIT',
     long_description=open('README.rst').read(),
     packages=find_packages(exclude=['tests.*', 'tests']),

@@ -3,7 +3,7 @@ import os
 import sys
 import tempfile
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 if sys.platform != 'win32':
     def replace_atomic(src, dst):
