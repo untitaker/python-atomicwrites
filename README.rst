@@ -5,7 +5,17 @@ python-atomicwrites
 .. image:: https://travis-ci.org/untitaker/python-atomicwrites.svg?branch=master
     :target: https://travis-ci.org/untitaker/python-atomicwrites
 
-Atomic file writes on POSIX.
+Atomic file writes.
+
+Features that distinguish it from other similar libraries:
+
+- Race-free assertion that the target file doesn't yet exist. This can be
+  controlled with the ``overwrite`` parameter.
+
+- Windows support, although untested. The MSDN resources are not very explicit
+  about which operations are atomic. This requires ``pywin32``.
+
+- Simple high-level API that wraps a very flexible class-based API.
 
 Usage::
 
