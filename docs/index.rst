@@ -10,15 +10,12 @@ API
 Low-level API
 -------------
 
-.. autoclass:: AtomicWriterBase
-   :members: open
+.. autofunction:: replace_atomic
 
-.. autoclass:: PosixAtomicWriter
-   :members: open
+.. autofunction:: move_atomic
 
-.. class:: AtomicWriter
-
-   Automatically selected writer for the current OS.
+.. autoclass:: AtomicWriter
+   :members:
 
 License
 -------

@@ -2,6 +2,7 @@
 
 import ast
 import re
+import sys
 
 from setuptools import find_packages, setup
 
@@ -14,6 +15,10 @@ with open('atomicwrites/__init__.py', 'rb') as f:
         f.read().decode('utf-8')).group(1)))
 
 
+deps = []
+if sys.platform == 'win32':
+    deps.append('pywin32')
+
 setup(
     name='atomicwrites',
     version=version,
@@ -24,5 +29,6 @@ setup(
     license='MIT',
     long_description=open('README.rst').read(),
     packages=find_packages(exclude=['tests.*', 'tests']),
-    include_package_data=True
+    include_package_data=True,
+    install_requires=deps
 )
