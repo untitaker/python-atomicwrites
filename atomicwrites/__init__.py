@@ -94,10 +94,9 @@ class AtomicWriter(object):
     def commit(self):
         '''Move the temporary file to the target location.'''
         if self._overwrite:
-            os.rename(self._tmppath, self._path)  # atomic
+            replace_atomic(self._tmppath, self._path)  # atomic
         else:
-            os.link(self._tmppath, self._path)  # atomic, fails if file exists
-            os.unlink(self._tmppath)
+            move_atomic(self._tmppath, self._path)
 
     def rollback(self):
         '''Clean up all temporary resources.'''
