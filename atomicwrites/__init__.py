@@ -119,8 +119,7 @@ class AtomicWriter(object):
 def atomic_write(path, mode='w', overwrite=False, writer_cls=AtomicWriter,
                  **open_kwargs):
     '''
-    Simple atomic writes. This wraps :py:class:`AtomicWriterBase` and its
-    subclasses::
+    Simple atomic writes. This wraps :py:class:`AtomicWriter`::
 
         with atomic_write(path) as f:
             f.write(...)
