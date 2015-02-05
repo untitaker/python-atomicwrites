@@ -16,7 +16,7 @@ else:
     import win32api
     import win32con
 
-    _windows_default_flags = win32con.WRITE_THROUGH
+    _windows_default_flags = win32con.MOVEFILE_WRITE_THROUGH
 
     def replace_atomic(src, dst):
         win32api.MoveFileEx(
