@@ -17,7 +17,8 @@ with open('atomicwrites/__init__.py', 'rb') as f:
 
 deps = []
 if sys.platform == 'win32':
-    deps.append('pywin32')
+    # http://sourceforge.net/p/pywin32/bugs/680/
+    deps.append('pypiwin32')
 
 setup(
     name='atomicwrites',
