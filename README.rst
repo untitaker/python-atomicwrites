@@ -5,6 +5,10 @@ python-atomicwrites
 .. image:: https://travis-ci.org/untitaker/python-atomicwrites.svg?branch=master
     :target: https://travis-ci.org/untitaker/python-atomicwrites
 
+.. image:: https://ci.appveyor.com/api/projects/status/vadc4le3c27to59x/branch/master?svg=true
+   :target: https://ci.appveyor.com/project/untitaker/python-atomicwrites/branch/master
+
+
 Atomic file writes.
 
 Features that distinguish it from other similar libraries:
