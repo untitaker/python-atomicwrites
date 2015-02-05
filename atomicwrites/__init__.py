@@ -14,14 +14,14 @@ if sys.platform != 'win32':
         os.unlink(src)
 else:
     import win32api
-    import win32con
+    import win32file
 
-    _windows_default_flags = win32con.MOVEFILE_WRITE_THROUGH
+    _windows_default_flags = win32file.MOVEFILE_WRITE_THROUGH
 
     def replace_atomic(src, dst):
         win32api.MoveFileEx(
             src, dst,
-            win32con.MOVEFILE_REPLACE_EXISTING | _windows_default_flags
+            win32file.MOVEFILE_REPLACE_EXISTING | _windows_default_flags
         )
 
     def move_atomic(src, dst):
