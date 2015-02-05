@@ -67,8 +67,7 @@ class AtomicWriter(object):
     combination of ``link`` and ``unlink``. On Windows, it uses ``MoveFileEx``
     (see MSDN_) with the appropriate flags.
 
-    .. _MSDN::
-        https://msdn.microsoft.com/en-us/library/windows/desktop/aa365240%28v=vs.85%29.aspx
+    .. _MSDN: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365240%28v=vs.85%29.aspx
 
     :param path: The destination filepath. May or may not exist.
     :param overwrite: If set to false, an error is raised if ``path`` exists.
