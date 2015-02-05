@@ -31,6 +31,24 @@ Usage::
 
     # Now it does.
 
+How it works
+============
+
+It uses a temporary file in the same directory as the given path. This ensures
+that the temporary file resides on the same filesystem.
+
+The temporary file will then be atomically moved to the target location: On
+POSIX, it will use ``rename`` if files should be overwritten, otherwise a
+combination of ``link`` and ``unlink``. On Windows, it uses ``MoveFileEx`` (see
+MSDN_) with the appropriate flags.
+
+Note that with ``link`` and ``unlink``, there's a timewindow where the file
+might be available under two entries in the filesystem: The name of the
+temporary file, and the name of the target file.
+
+.. _MSDN: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365240%28v=vs.85%29.aspx
+
+
 License
 =======
 
