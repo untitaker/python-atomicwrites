@@ -16,4 +16,4 @@ install:
   - "%PYTHON%/Scripts/pip.exe install tox"
 
 test_script:
-  - "%PYTHON%/Scripts/tox.exe"
+  - "%PYTHON%/python.exe run-tests.py"
