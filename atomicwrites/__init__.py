@@ -118,11 +118,13 @@ class AtomicWriter(object):
         try:
             with get_fileobject() as f:
                 yield f
-        except:
-            self.rollback()
-            raise
-        else:
             self.commit()
+        except:
+            try:
+                self.rollback()
+            except Exception:
+                pass
+            raise
 
     def get_fileobject(self, mode):
         '''Return the temporary path to use.'''
