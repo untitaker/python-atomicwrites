@@ -1,4 +1,4 @@
-from atomicwrites import atomic_write
+from atomicwrites import atomic_write, FileExistsError
 
 import pytest
 
@@ -9,7 +9,7 @@ def test_atomic_write(tmpdir):
         with atomic_write(str(fname), overwrite=True) as f:
             f.write('hoho')
 
-    with pytest.raises(OSError):
+    with pytest.raises(FileExistsError):
         with atomic_write(str(fname), overwrite=False) as f:
             f.write('haha')
 
