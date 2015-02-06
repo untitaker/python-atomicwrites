@@ -1,54 +1,94 @@
 import contextlib
+import errno
 import os
 import sys
 import tempfile
 
 __version__ = '0.1.2'
 
+
+PY2 = sys.version_info[0] == 2
+
+if PY2:
+    class FileExistsError(OSError):
+        errno = errno.EEXIST
+else:
+    # For some reason we have to redefine this, or users can't import it.
+    FileExistsError = FileExistsError
+
+
 if sys.platform != 'win32':
-    def replace_atomic(src, dst):
+    @contextlib.contextmanager
+    def handle_errors():
+        try:
+            yield
+        except FileExistsError:
+            raise
+        except OSError as e:
+            if e.errno == errno.EEXIST:
+                raise FileExistsError(str(e))
+            else:
+                raise
+
+    def _replace_atomic(src, dst):
         os.rename(src, dst)
 
-    def move_atomic(src, dst):
+    def _move_atomic(src, dst):
         os.link(src, dst)
         os.unlink(src)
 else:
     import win32api
-    import win32con
+    import win32file
+    import pywintypes
 
-    _windows_default_flags = win32con.MOVEFILE_WRITE_THROUGH
+    _windows_default_flags = win32file.MOVEFILE_WRITE_THROUGH
 
-    def replace_atomic(src, dst):
+    @contextlib.contextmanager
+    def handle_errors():
+        try:
+            yield
+        except pywintypes.error as e:
+            if e.winerror == 183:
+                raise FileExistsError(str(e))
+            else:
+                raise
+
+    def _replace_atomic(src, dst):
         win32api.MoveFileEx(
             src, dst,
-            win32con.MOVEFILE_REPLACE_EXISTING | _windows_default_flags
+            win32file.MOVEFILE_REPLACE_EXISTING | _windows_default_flags
         )
 
-    def move_atomic(src, dst):
+    def _move_atomic(src, dst):
         win32api.MoveFileEx(
             src, dst,
             _windows_default_flags
         )
 
 
-replace_atomic.__doc__ = \
+def replace_atomic(src, dst):
     '''
     Move ``src`` to ``dst``. If ``dst`` exists, it will be silently
     overwritten.
 
     Both paths must reside on the same filesystem for the operation to be
     atomic.
-    ''' + (replace_atomic.__doc__ or '')
+    '''
+    with handle_errors():
+        return _replace_atomic(src, dst)
 
 
-move_atomic.__doc__ = \
+def move_atomic(src, dst):
     '''
     Move ``src`` to ``dst``. There might a timewindow where both filesystem
-    entries exist. If ``dst`` already exists, an error will be raised.
+    entries exist. If ``dst`` already exists, :py:exc:`FileExistsError` will be
+    raised.
 
     Both paths must reside on the same filesystem for the operation to be
     atomic.
-    ''' + (move_atomic.__doc__ or '')
+    '''
+    with handle_errors():
+        return _move_atomic(src, dst)
 
 
 class AtomicWriter(object):
@@ -94,10 +134,9 @@ class AtomicWriter(object):
     def commit(self):
         '''Move the temporary file to the target location.'''
         if self._overwrite:
-            os.rename(self._tmppath, self._path)  # atomic
+            replace_atomic(self._tmppath, self._path)  # atomic
         else:
-            os.link(self._tmppath, self._path)  # atomic, fails if file exists
-            os.unlink(self._tmppath)
+            move_atomic(self._tmppath, self._path)
 
     def rollback(self):
         '''Clean up all temporary resources.'''
