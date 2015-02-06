@@ -21,7 +21,9 @@ Features that distinguish it from other similar libraries:
 
 - Simple high-level API that wraps a very flexible class-based API.
 
-Usage::
+Usage:
+
+.. code-block:: python
 
     from atomicwrites import atomic_write
 
