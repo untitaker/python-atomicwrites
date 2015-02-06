@@ -4,7 +4,7 @@ import os
 import sys
 import tempfile
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 
 PY2 = sys.version_info[0] == 2
