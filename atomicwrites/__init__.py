@@ -99,54 +99,59 @@ class AtomicWriter(object):
             f.write(...)
 
     :param path: The destination filepath. May or may not exist.
+    :param mode: The filemode for the temporary file.
     :param overwrite: If set to false, an error is raised if ``path`` exists.
-        Either way, the operation is atomic.
+        Errors are only raised after the file has been written to.  Either way,
+        the operation is atomic.
+
+    If you need further control over the exact behavior, you are encouraged to
+    subclass.
     '''
 
-    def __init__(self, path, overwrite=False):
+    def __init__(self, path, mode='w', overwrite=False):
         self._path = path
+        self._mode = mode
         self._overwrite = overwrite
 
-    def open(self, mode='w'):
+    def open(self):
         '''
         Open the temporary file.
         '''
-        return self._open(lambda: self.get_fileobject(mode=mode))
+        return self._open(self.get_fileobject)
 
     @contextlib.contextmanager
     def _open(self, get_fileobject):
         try:
             with get_fileobject() as f:
                 yield f
-            self.commit()
+            self.commit(f)
         except:
             try:
-                self.rollback()
+                self.rollback(f)
             except Exception:
                 pass
             raise
 
-    def get_fileobject(self, mode):
+    def get_fileobject(self, dir=None, **kwargs):
         '''Return the temporary path to use.'''
-        tmpdir = os.path.dirname(self._path)
-        f = tempfile.NamedTemporaryFile(mode=mode, dir=tmpdir, delete=False)
-        self._tmppath = f.name
-        return f
+        if dir is None:
+            dir = os.path.dirname(self._path)
+        return tempfile.NamedTemporaryFile(mode=self._mode, dir=dir,
+                                           delete=False, **kwargs)
 
-    def commit(self):
+    def commit(self, f):
         '''Move the temporary file to the target location.'''
         if self._overwrite:
-            replace_atomic(self._tmppath, self._path)  # atomic
+            replace_atomic(f.name, self._path)  # atomic
         else:
-            move_atomic(self._tmppath, self._path)
+            move_atomic(f.name, self._path)
 
-    def rollback(self):
+    def rollback(self, f):
         '''Clean up all temporary resources.'''
-        os.unlink(self._tmppath)
+        os.unlink(f.name)
 
 
-def atomic_write(path, mode='w', overwrite=False, writer_cls=AtomicWriter,
-                 **open_kwargs):
+def atomic_write(path, writer_cls=AtomicWriter, **cls_kwargs):
     '''
     Simple atomic writes. This wraps :py:class:`AtomicWriter`::
 
@@ -154,12 +159,8 @@ def atomic_write(path, mode='w', overwrite=False, writer_cls=AtomicWriter,
             f.write(...)
 
     :param path: The target path to write to.
-    :param mode: The mode to open the file with.
-    :param overwrite: Whether to overwrite the target file if it already
-        exists. Errors are only raised after the file has been written to.
-    :param writer_cls: A custom writer class to use.
 
-    Additional keyword arguments are passed to the ``open``-method of the
-    writer class. See :py:meth:`AtomicWriterBase.open`.
+    Additional keyword arguments are passed to the writer class. See
+    :py:class:`AtomicWriterBase`.
     '''
-    return writer_cls(path, overwrite=overwrite).open(mode=mode, **open_kwargs)
+    return writer_cls(path, **cls_kwargs).open()
