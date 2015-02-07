@@ -2,7 +2,7 @@
 
 import sys
 
-if hasattr(sys, 'pypy_translation:info'):
+if hasattr(sys, 'pypy_translation_info'):
     env_ident = 'pypy'
 else:
     env_ident = 'py' + ''.join(map(str, sys.version_info[:2]))
