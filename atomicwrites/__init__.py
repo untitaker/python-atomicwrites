@@ -12,9 +12,13 @@ PY2 = sys.version_info[0] == 2
 if PY2:
     class FileExistsError(OSError):
         errno = errno.EEXIST
+
+    class FileNotFoundError(OSError):
+        errno = errno.ENOENT
 else:
     # For some reason we have to redefine this, or users can't import it.
     FileExistsError = FileExistsError
+    FileNotFoundError = FileNotFoundError
 
 
 if sys.platform != 'win32':
@@ -42,14 +46,19 @@ else:
     import pywintypes
 
     _windows_default_flags = win32file.MOVEFILE_WRITE_THROUGH
+    _windows_error_table = {
+        183: FileExistsError,
+        3: FileNotFoundError
+    }
 
     @contextlib.contextmanager
     def handle_errors():
         try:
             yield
         except pywintypes.error as e:
-            if e.winerror == 183:
-                raise FileExistsError(str(e))
+            native_cls = _windows_error_table.get(e.winerror, None)
+            if native_cls is not None:
+                raise native_cls(str(e))
             else:
                 raise
 
