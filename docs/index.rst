@@ -14,7 +14,7 @@ Errorhandling
 All filesystem errors are subclasses of :py:exc:`OSError`.
 
 - On UNIX systems, errors from the Python stdlib calls are simply uncaught.
-- On Windows systems, some PyWin32 errors are intercepted such that they
+- On Windows systems, PyWin32 errors are wrapped such that they somewhat
   resemble the stdlib exceptions. The original PyWin32 exception object is
   available as ``windows_error`` at all times.
 
