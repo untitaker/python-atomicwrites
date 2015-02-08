@@ -1,4 +1,6 @@
-from atomicwrites import atomic_write, FileExistsError
+import errno
+
+from atomicwrites import atomic_write
 
 import pytest
 
@@ -9,9 +11,11 @@ def test_atomic_write(tmpdir):
         with atomic_write(str(fname), overwrite=True) as f:
             f.write('hoho')
 
-    with pytest.raises(FileExistsError):
+    with pytest.raises(OSError) as excinfo:
         with atomic_write(str(fname), overwrite=False) as f:
             f.write('haha')
+
+    assert excinfo.value.errno == errno.EEXIST
 
     assert fname.read() == 'hoho'
     assert len(tmpdir.listdir()) == 1
@@ -38,10 +42,12 @@ def test_replace_simultaneously_created_file(tmpdir):
 
 def test_dont_remove_simultaneously_created_file(tmpdir):
     fname = tmpdir.join('ha')
-    with pytest.raises(FileExistsError):
+    with pytest.raises(OSError) as excinfo:
         with atomic_write(str(fname), overwrite=False) as f:
             f.write('hoho')
             fname.write('harhar')
             assert fname.read() == 'harhar'
+
+    assert excinfo.value.errno == errno.EEXIST
     assert fname.read() == 'harhar'
     assert len(tmpdir.listdir()) == 1

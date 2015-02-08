@@ -8,8 +8,15 @@ API
 .. autofunction:: atomic_write
 
 
-Exceptions
-----------
+Errorhandling
+-------------
+
+All filesystem errors are subclasses of :py:exc:`OSError`.
+
+- On UNIX systems, errors from the Python stdlib calls are simply uncaught.
+- On Windows systems, some PyWin32 errors are intercepted such that they
+  resemble the stdlib exceptions. The original PyWin32 exception object is
+  available as ``windows_error`` at all times.
 
 .. exception:: FileExistsError
 

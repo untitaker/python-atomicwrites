@@ -9,30 +9,18 @@ __version__ = '0.1.3'
 
 PY2 = sys.version_info[0] == 2
 
-if PY2:
-    class FileExistsError(OSError):
-        errno = errno.EEXIST
 
-    class FileNotFoundError(OSError):
-        errno = errno.ENOENT
-else:
-    # For some reason we have to redefine this, or users can't import it.
-    FileExistsError = FileExistsError
-    FileNotFoundError = FileNotFoundError
+class _FileExistsError(OSError if PY2 else FileExistsError):
+    errno = errno.EEXIST
+
+class _FileNotFoundError(OSError if PY2 else FileNotFoundError):
+    errno = errno.ENOENT
 
 
 if sys.platform != 'win32':
     @contextlib.contextmanager
     def handle_errors():
-        try:
-            yield
-        except FileExistsError:
-            raise
-        except OSError as e:
-            if e.errno == errno.EEXIST:
-                raise FileExistsError(str(e))
-            else:
-                raise
+        yield
 
     def _replace_atomic(src, dst):
         os.rename(src, dst)
@@ -47,8 +35,8 @@ else:
 
     _windows_default_flags = win32file.MOVEFILE_WRITE_THROUGH
     _windows_error_table = {
-        183: FileExistsError,
-        3: FileNotFoundError
+        183: _FileExistsError,
+        3: _FileNotFoundError
     }
 
     @contextlib.contextmanager
@@ -56,11 +44,10 @@ else:
         try:
             yield
         except pywintypes.error as e:
-            native_cls = _windows_error_table.get(e.winerror, None)
-            if native_cls is not None:
-                raise native_cls(str(e))
-            else:
-                raise
+            native_cls = _windows_error_table.get(e.winerror, OSError)
+            new_e = native_cls(e)
+            new_e.windows_error = e
+            raise new_e
 
     def _replace_atomic(src, dst):
         win32api.MoveFileEx(
