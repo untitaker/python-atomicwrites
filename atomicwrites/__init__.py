@@ -105,6 +105,18 @@ class AtomicWriter(object):
     '''
 
     def __init__(self, path, mode='w', overwrite=False):
+        if 'w' not in mode:
+            raise ValueError('AtomicWriters can only be written to.')
+        if 'a' in mode:
+            raise ValueError(
+                'Appending to an existing file is not supported, because that '
+                'would involve an expensive `copy`-operation to a temporary '
+                'file. Open the file in normal `w`-mode and copy explicitly '
+                'if that\'s what you\'re after.'
+            )
+        if 'x' in mode:
+            raise ValueError('Use the `overwrite`-parameter instead.')
+
         self._path = path
         self._mode = mode
         self._overwrite = overwrite
