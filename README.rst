@@ -21,6 +21,8 @@ Features that distinguish it from other similar libraries (see alternatives_).
 
 - Simple high-level API that wraps a very flexible class-based API.
 
+- Attempts for consistent error handling across platforms.
+
 .. _fatomic: https://github.com/abarnert/fatomic
 
 Usage:
