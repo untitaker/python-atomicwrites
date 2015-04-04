@@ -11,8 +11,7 @@ python-atomicwrites
 
 Atomic file writes.
 
-Features that distinguish it from other similar libraries, such as atomicfile_
-or fatomic_:
+Features that distinguish it from other similar libraries (see alternatives_).
 
 - Race-free assertion that the target file doesn't yet exist. This can be
   controlled with the ``overwrite`` parameter.
@@ -22,7 +21,6 @@ or fatomic_:
 
 - Simple high-level API that wraps a very flexible class-based API.
 
-.. _atomicfile: https://github.com/sashka/atomicfile
 .. _fatomic: https://github.com/abarnert/fatomic
 
 Usage:
@@ -54,6 +52,17 @@ temporary file, and the name of the target file.
 
 .. _MSDN: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365240%28v=vs.85%29.aspx
 
+.. alternatives:
+
+Alternatives
+============
+
+- `mitsuhiko/python-atomicfile
+  <https://github.com/mitsuhiko/python-atomicfile>`_
+
+- `abarnert/fatomic <https://github.com/abarnert/fatomic>`_
+
+- `sashka/atomicfile <https://github.com/sashka/atomicfile>`_
 
 License
 =======
