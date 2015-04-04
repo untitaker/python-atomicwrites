@@ -29,6 +29,6 @@ Low-level API
    :members:
 
 License
--------
+=======
 
 .. include:: ../LICENSE
