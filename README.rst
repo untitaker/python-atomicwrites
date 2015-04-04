@@ -8,8 +8,18 @@ python-atomicwrites
 .. image:: https://ci.appveyor.com/api/projects/status/vadc4le3c27to59x/branch/master?svg=true
    :target: https://ci.appveyor.com/project/untitaker/python-atomicwrites/branch/master
 
-
 Atomic file writes.
+
+.. code-block:: python
+
+    from atomicwrites import atomic_write
+
+    with atomic_write('foo.txt', overwrite=True) as f:
+        f.write('Hello world.')
+        # "foo.txt" doesn't exist yet.
+
+    # Now it does.
+
 
 Features that distinguish it from other similar libraries (see alternatives_).
 
@@ -21,21 +31,8 @@ Features that distinguish it from other similar libraries (see alternatives_).
 
 - Simple high-level API that wraps a very flexible class-based API.
 
-- Attempts for consistent error handling across platforms.
+- Consistent error handling across platforms.
 
-.. _fatomic: https://github.com/abarnert/fatomic
-
-Usage:
-
-.. code-block:: python
-
-    from atomicwrites import atomic_write
-
-    with atomic_write('foo.txt') as f:
-        f.write('Hello world.')
-        # "foo.txt" doesn't exist yet.
-
-    # Now it does.
 
 How it works
 ============
