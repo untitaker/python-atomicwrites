@@ -43,7 +43,7 @@ that the temporary file resides on the same filesystem.
 The temporary file will then be atomically moved to the target location: On
 POSIX, it will use ``rename`` if files should be overwritten, otherwise a
 combination of ``link`` and ``unlink``. On Windows, it uses ``MoveFileEx`` (see
-MSDN_) with the appropriate flags.
+MSDN_) through stdlib's ``ctypes`` with the appropriate flags.
 
 Note that with ``link`` and ``unlink``, there's a timewindow where the file
 might be available under two entries in the filesystem: The name of the
