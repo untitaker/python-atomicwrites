@@ -14,12 +14,6 @@ with open('atomicwrites/__init__.py', 'rb') as f:
     version = str(ast.literal_eval(_version_re.search(
         f.read().decode('utf-8')).group(1)))
 
-
-deps = []
-if sys.platform == 'win32':
-    # http://sourceforge.net/p/pywin32/bugs/680/
-    deps.append('pypiwin32')
-
 setup(
     name='atomicwrites',
     version=version,
@@ -31,5 +25,4 @@ setup(
     long_description=open('README.rst').read(),
     packages=find_packages(exclude=['tests.*', 'tests']),
     include_package_data=True,
-    install_requires=deps
 )
