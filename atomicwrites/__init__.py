@@ -9,12 +9,19 @@ __version__ = '0.1.4'
 
 PY2 = sys.version_info[0] == 2
 
+text_type = unicode if PY2 else str
+
 
 class _FileExistsError(OSError if PY2 else FileExistsError):
     errno = errno.EEXIST
 
 class _FileNotFoundError(OSError if PY2 else FileNotFoundError):
     errno = errno.ENOENT
+
+def _path_to_unicode(x):
+    if not isinstance(x, text_type):
+        return x.decode(sys.getfilesystemencoding())
+    return x
 
 
 if sys.platform != 'win32':
@@ -29,11 +36,12 @@ if sys.platform != 'win32':
         os.link(src, dst)
         os.unlink(src)
 else:
-    import win32api
-    import win32file
-    import pywintypes
+    from ctypes.windll import kernel32
 
-    _windows_default_flags = win32file.MOVEFILE_WRITE_THROUGH
+    _MOVEFILE_REPLACE_EXISTING = 0x1
+    _MOVEFILE_WRITE_THROUGH = 0x8
+
+    _windows_default_flags = _MOVEFILE_WRITE_THROUGH
     _windows_error_table = {
         183: _FileExistsError,
         3: _FileNotFoundError
@@ -50,14 +58,14 @@ else:
             raise new_e
 
     def _replace_atomic(src, dst):
-        win32api.MoveFileEx(
-            src, dst,
-            win32file.MOVEFILE_REPLACE_EXISTING | _windows_default_flags
+        kernel32.MoveFileExW(
+            _path_to_unicode(src), _path_to_unicode(dst),
+            _windows_default_flags | _MOVEFILE_REPLACE_EXISTING
         )
 
     def _move_atomic(src, dst):
-        win32api.MoveFileEx(
-            src, dst,
+        kernel32.MoveFileExW(
+            _path_to_unicode(src), _path_to_unicode(dst),
             _windows_default_flags
         )
 

@@ -27,7 +27,7 @@ Features that distinguish it from other similar libraries (see alternatives_).
   controlled with the ``overwrite`` parameter.
 
 - Windows support, although untested. The MSDN resources are not very explicit
-  about which operations are atomic. This requires ``pywin32``.
+  about which operations are atomic.
 
 - Simple high-level API that wraps a very flexible class-based API.
 
