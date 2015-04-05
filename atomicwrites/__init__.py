@@ -36,7 +36,7 @@ if sys.platform != 'win32':
         os.link(src, dst)
         os.unlink(src)
 else:
-    from ctypes.windll import kernel32
+    from ctypes import windll
 
     _MOVEFILE_REPLACE_EXISTING = 0x1
     _MOVEFILE_WRITE_THROUGH = 0x8
@@ -58,13 +58,13 @@ else:
             raise new_e
 
     def _replace_atomic(src, dst):
-        kernel32.MoveFileExW(
+        windll.kernel32.MoveFileExW(
             _path_to_unicode(src), _path_to_unicode(dst),
             _windows_default_flags | _MOVEFILE_REPLACE_EXISTING
         )
 
     def _move_atomic(src, dst):
-        kernel32.MoveFileExW(
+        windll.kernel32.MoveFileExW(
             _path_to_unicode(src), _path_to_unicode(dst),
             _windows_default_flags
         )
