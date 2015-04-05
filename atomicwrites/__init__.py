@@ -30,7 +30,7 @@ else:
 
     _MOVEFILE_REPLACE_EXISTING = 0x1
     _MOVEFILE_WRITE_THROUGH = 0x8
-    _windows_default_flags = _MOVEFILE_WRITE_THROUGHr
+    _windows_default_flags = _MOVEFILE_WRITE_THROUGH
 
     def _handle_errors(rv):
         if not rv:
