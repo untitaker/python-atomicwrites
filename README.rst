@@ -27,11 +27,9 @@ Features that distinguish it from other similar libraries (see alternatives_).
   controlled with the ``overwrite`` parameter.
 
 - Windows support, although untested. The MSDN resources are not very explicit
-  about which operations are atomic. This requires ``pywin32``.
+  about which operations are atomic.
 
 - Simple high-level API that wraps a very flexible class-based API.
-
-- Consistent error handling across platforms.
 
 
 How it works
@@ -43,7 +41,7 @@ that the temporary file resides on the same filesystem.
 The temporary file will then be atomically moved to the target location: On
 POSIX, it will use ``rename`` if files should be overwritten, otherwise a
 combination of ``link`` and ``unlink``. On Windows, it uses ``MoveFileEx`` (see
-MSDN_) with the appropriate flags.
+MSDN_) through stdlib's ``ctypes`` with the appropriate flags.
 
 Note that with ``link`` and ``unlink``, there's a timewindow where the file
 might be available under two entries in the filesystem: The name of the

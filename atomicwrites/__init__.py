@@ -9,19 +9,16 @@ __version__ = '0.1.4'
 
 PY2 = sys.version_info[0] == 2
 
+text_type = unicode if PY2 else str
 
-class _FileExistsError(OSError if PY2 else FileExistsError):
-    errno = errno.EEXIST
 
-class _FileNotFoundError(OSError if PY2 else FileNotFoundError):
-    errno = errno.ENOENT
+def _path_to_unicode(x):
+    if not isinstance(x, text_type):
+        return x.decode(sys.getfilesystemencoding())
+    return x
 
 
 if sys.platform != 'win32':
-    @contextlib.contextmanager
-    def handle_errors():
-        yield
-
     def _replace_atomic(src, dst):
         os.rename(src, dst)
 
@@ -29,37 +26,27 @@ if sys.platform != 'win32':
         os.link(src, dst)
         os.unlink(src)
 else:
-    import win32api
-    import win32file
-    import pywintypes
+    from ctypes import windll, WinError
 
-    _windows_default_flags = win32file.MOVEFILE_WRITE_THROUGH
-    _windows_error_table = {
-        183: _FileExistsError,
-        3: _FileNotFoundError
-    }
+    _MOVEFILE_REPLACE_EXISTING = 0x1
+    _MOVEFILE_WRITE_THROUGH = 0x8
+    _windows_default_flags = _MOVEFILE_WRITE_THROUGHr
 
-    @contextlib.contextmanager
-    def handle_errors():
-        try:
-            yield
-        except pywintypes.error as e:
-            native_cls = _windows_error_table.get(e.winerror, OSError)
-            new_e = native_cls(e)
-            new_e.windows_error = e
-            raise new_e
+    def _handle_errors(rv):
+        if not rv:
+            raise WinError()
 
     def _replace_atomic(src, dst):
-        win32api.MoveFileEx(
-            src, dst,
-            win32file.MOVEFILE_REPLACE_EXISTING | _windows_default_flags
-        )
+        _handle_errors(windll.kernel32.MoveFileExW(
+            _path_to_unicode(src), _path_to_unicode(dst),
+            _windows_default_flags | _MOVEFILE_REPLACE_EXISTING
+        ))
 
     def _move_atomic(src, dst):
-        win32api.MoveFileEx(
-            src, dst,
+        _handle_errors(windll.kernel32.MoveFileExW(
+            _path_to_unicode(src), _path_to_unicode(dst),
             _windows_default_flags
-        )
+        ))
 
 
 def replace_atomic(src, dst):
@@ -70,8 +57,7 @@ def replace_atomic(src, dst):
     Both paths must reside on the same filesystem for the operation to be
     atomic.
     '''
-    with handle_errors():
-        return _replace_atomic(src, dst)
+    return _replace_atomic(src, dst)
 
 
 def move_atomic(src, dst):
@@ -83,8 +69,7 @@ def move_atomic(src, dst):
     Both paths must reside on the same filesystem for the operation to be
     atomic.
     '''
-    with handle_errors():
-        return _move_atomic(src, dst)
+    return _move_atomic(src, dst)
 
 
 class AtomicWriter(object):
