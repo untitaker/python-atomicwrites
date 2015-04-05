@@ -56,8 +56,14 @@ temporary file, and the name of the target file.
 Alternatives
 ============
 
-- `mitsuhiko/python-atomicfile
-  <https://github.com/mitsuhiko/python-atomicfile>`_
+``python-atomicwrites`` is inspired by some of the following libraries,
+however, no code has been directly taken from them:
+
+- The Trac project's `utility functions
+  <http://www.edgewall.org/docs/tags-trac-0.11.7/epydoc/trac.util-pysrc.html>`_,
+  also used in `Werkzeug <http://werkzeug.pocoo.org/>`_ and
+  `mitsuhiko/python-atomicfile
+  <https://github.com/mitsuhiko/python-atomicfile>`_.
 
 - `abarnert/fatomic <https://github.com/abarnert/fatomic>`_
 
