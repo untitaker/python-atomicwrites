@@ -27,7 +27,7 @@ Features that distinguish it from other similar libraries (see alternatives_).
   controlled with the ``overwrite`` parameter.
 
 - Windows support, although untested. The MSDN resources are not very explicit
-  about which operations are atomic. This requires ``pywin32``.
+  about which operations are atomic.
 
 - Simple high-level API that wraps a very flexible class-based API.
 
@@ -43,7 +43,7 @@ that the temporary file resides on the same filesystem.
 The temporary file will then be atomically moved to the target location: On
 POSIX, it will use ``rename`` if files should be overwritten, otherwise a
 combination of ``link`` and ``unlink``. On Windows, it uses ``MoveFileEx`` (see
-MSDN_) with the appropriate flags.
+MSDN_) through stdlib's ``ctypes`` with the appropriate flags.
 
 Note that with ``link`` and ``unlink``, there's a timewindow where the file
 might be available under two entries in the filesystem: The name of the
@@ -56,8 +56,14 @@ temporary file, and the name of the target file.
 Alternatives
 ============
 
-- `mitsuhiko/python-atomicfile
-  <https://github.com/mitsuhiko/python-atomicfile>`_
+``python-atomicwrites`` is inspired by some of the following libraries,
+however, no code has been directly taken from them:
+
+- The Trac project's `utility functions
+  <http://www.edgewall.org/docs/tags-trac-0.11.7/epydoc/trac.util-pysrc.html>`_,
+  also used in `Werkzeug <http://werkzeug.pocoo.org/>`_ and
+  `mitsuhiko/python-atomicfile
+  <https://github.com/mitsuhiko/python-atomicfile>`_.
 
 - `abarnert/fatomic <https://github.com/abarnert/fatomic>`_
 
