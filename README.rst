@@ -56,6 +56,9 @@ temporary file, and the name of the target file.
 Alternatives/Credit
 ===================
 
+Atomicwrites is directly inspired by the following libraries (and shares some
+code too):
+
 - The Trac project's `utility functions
   <http://www.edgewall.org/docs/tags-trac-0.11.7/epydoc/trac.util-pysrc.html>`_,
   also used in `Werkzeug <http://werkzeug.pocoo.org/>`_ and
@@ -65,6 +68,8 @@ Alternatives/Credit
 
 - `abarnert/fatomic <https://github.com/abarnert/fatomic>`_. Windows support
   (based on ``PyWin32``) was originally taken from there.
+
+Other alternatives to atomicwrites include:
 
 - `sashka/atomicfile <https://github.com/sashka/atomicfile>`_. Originally I
   considered using that, but at the time it was lacking a lot of features I
