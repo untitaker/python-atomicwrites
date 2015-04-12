@@ -126,7 +126,7 @@ class AtomicWriter(object):
             raise
 
     def get_fileobject(self, dir=None, **kwargs):
-        '''Return the temporary path to use.'''
+        '''Return the temporary file to use.'''
         if dir is None:
             dir = os.path.dirname(self._path)
         return tempfile.NamedTemporaryFile(mode=self._mode, dir=dir,
