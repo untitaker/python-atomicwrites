@@ -53,21 +53,27 @@ temporary file, and the name of the target file.
 
 .. alternatives:
 
-Alternatives
-============
-
-``python-atomicwrites`` is inspired by some of the following libraries,
-however, no code has been directly taken from them:
+Alternatives/Credit
+===================
 
 - The Trac project's `utility functions
   <http://www.edgewall.org/docs/tags-trac-0.11.7/epydoc/trac.util-pysrc.html>`_,
   also used in `Werkzeug <http://werkzeug.pocoo.org/>`_ and
   `mitsuhiko/python-atomicfile
-  <https://github.com/mitsuhiko/python-atomicfile>`_.
+  <https://github.com/mitsuhiko/python-atomicfile>`_. The idea to use
+  ``ctypes`` instead of ``PyWin32`` originated there.
 
-- `abarnert/fatomic <https://github.com/abarnert/fatomic>`_
+- `abarnert/fatomic <https://github.com/abarnert/fatomic>`_. Windows support
+  (based on ``PyWin32``) was originally taken from there.
 
-- `sashka/atomicfile <https://github.com/sashka/atomicfile>`_
+- `sashka/atomicfile <https://github.com/sashka/atomicfile>`_. Originally I
+  considered using that, but at the time it was lacking a lot of features I
+  needed (Windows support, overwrite-parameter, overriding behavior through
+  subclassing).
+
+- The `Boltons library collection <https://github.com/mahmoud/boltons>`_
+  features a class for atomic file writes, which seems to have a very similar
+  ``overwrite`` parameter. It is lacking Windows support though.
 
 License
 =======
