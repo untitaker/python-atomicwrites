@@ -21,7 +21,7 @@ Atomic file writes.
     # Now it does.
 
 
-Features that distinguish it from other similar libraries (see alternatives_).
+Features that distinguish it from other similar libraries (see `Alternatives and Credit`_):
 
 - Race-free assertion that the target file doesn't yet exist. This can be
   controlled with the ``overwrite`` parameter.
@@ -51,13 +51,11 @@ temporary file, and the name of the target file.
 
 .. _MSDN: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365240%28v=vs.85%29.aspx
 
-.. alternatives:
+Alternatives and Credit
+=======================
 
-Alternatives/Credit
-===================
-
-Atomicwrites is directly inspired by the following libraries (and shares some
-code too):
+Atomicwrites is directly inspired by the following libraries (and shares a
+minimal amount of code):
 
 - The Trac project's `utility functions
   <http://www.edgewall.org/docs/tags-trac-0.11.7/epydoc/trac.util-pysrc.html>`_,
