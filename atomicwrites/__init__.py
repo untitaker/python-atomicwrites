@@ -152,8 +152,11 @@ def atomic_write(path, writer_cls=AtomicWriter, **cls_kwargs):
             f.write(...)
 
     :param path: The target path to write to.
+    :param writer_cls: The writer class to use. This parameter is useful if you
+        subclassed :py:class:`AtomicWriter` to change some behavior and want to
+        use that new subclass.
 
     Additional keyword arguments are passed to the writer class. See
-    :py:class:`AtomicWriterBase`.
+    :py:class:`AtomicWriter`.
     '''
     return writer_cls(path, **cls_kwargs).open()
