@@ -7,5 +7,5 @@ if hasattr(sys, 'pypy_translation_info'):
 else:
     env_ident = 'py' + ''.join(map(str, sys.version_info[:2]))
 
-from tox._cmdline import main
-main(('-e', env_ident))
+from tox import cmdline
+cmdline(('-e', env_ident))
