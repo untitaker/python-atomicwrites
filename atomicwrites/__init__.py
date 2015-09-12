@@ -117,6 +117,9 @@ class AtomicWriter(object):
         try:
             with get_fileobject() as f:
                 yield f
+                f.flush()
+                os.fsync(f.fileno())
+
             self.commit(f)
         except:
             try:
@@ -134,9 +137,6 @@ class AtomicWriter(object):
 
     def commit(self, f):
         '''Move the temporary file to the target location.'''
-        f.flush()
-        os.fsync(f.fileno())
-
         if self._overwrite:
             replace_atomic(f.name, self._path)
         else:
