@@ -134,8 +134,11 @@ class AtomicWriter(object):
 
     def commit(self, f):
         '''Move the temporary file to the target location.'''
+        f.flush()
+        os.fsync(f.fileno())
+
         if self._overwrite:
-            replace_atomic(f.name, self._path)  # atomic
+            replace_atomic(f.name, self._path)
         else:
             move_atomic(f.name, self._path)
 
