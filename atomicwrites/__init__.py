@@ -117,9 +117,7 @@ class AtomicWriter(object):
         try:
             with get_fileobject() as f:
                 yield f
-                f.flush()
-                os.fsync(f.fileno())
-
+                self.sync(f)
             self.commit(f)
         except:
             try:
@@ -134,6 +132,12 @@ class AtomicWriter(object):
             dir = os.path.dirname(self._path)
         return tempfile.NamedTemporaryFile(mode=self._mode, dir=dir,
                                            delete=False, **kwargs)
+
+    def sync(self, f):
+        '''responsible for clearing as many file caches as possible before
+        commit'''
+        f.flush()
+        os.fsync(f.fileno())
 
     def commit(self, f):
         '''Move the temporary file to the target location.'''
