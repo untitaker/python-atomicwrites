@@ -114,6 +114,7 @@ class AtomicWriter(object):
 
     @contextlib.contextmanager
     def _open(self, get_fileobject):
+        f = None  # make sure f exists even if get_fileobject() fails
         try:
             with get_fileobject() as f:
                 yield f
