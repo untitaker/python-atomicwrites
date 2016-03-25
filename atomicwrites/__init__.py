@@ -116,16 +116,18 @@ class AtomicWriter(object):
     def _open(self, get_fileobject):
         f = None  # make sure f exists even if get_fileobject() fails
         try:
+            success = False
             with get_fileobject() as f:
                 yield f
                 self.sync(f)
             self.commit(f)
-        except:
-            try:
-                self.rollback(f)
-            except Exception:
-                pass
-            raise
+            success = True
+        finally:
+            if not success:
+                try:
+                    self.rollback(f)
+                except Exception:
+                    pass
 
     def get_fileobject(self, dir=None, **kwargs):
         '''Return the temporary file to use.'''

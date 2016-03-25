@@ -24,7 +24,7 @@ def test_atomic_write(tmpdir):
 def test_teardown(tmpdir):
     fname = tmpdir.join('ha')
     with pytest.raises(AssertionError):
-        with atomic_write(str(fname), overwrite=True) as f:
+        with atomic_write(str(fname), overwrite=True):
             assert False
 
     assert not tmpdir.listdir()
@@ -51,3 +51,17 @@ def test_dont_remove_simultaneously_created_file(tmpdir):
     assert excinfo.value.errno == errno.EEXIST
     assert fname.read() == 'harhar'
     assert len(tmpdir.listdir()) == 1
+
+
+# Verify that nested exceptions during rollback do not overwrite the initial
+# exception that triggered a rollback.
+def test_open_reraise(tmpdir):
+    fname = tmpdir.join('ha')
+    with pytest.raises(AssertionError):
+        with atomic_write(str(fname), overwrite=False) as f:
+            # Mess with f, so rollback will trigger an OSError. We're testing
+            # that the initial AssertionError triggered below is propagated up
+            # the stack, not the second exception triggered during rollback.
+            f.name = "asdf"
+            # Now trigger our own exception.
+            assert False, "Intentional failure for testing purposes"
