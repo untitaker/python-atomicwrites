@@ -24,7 +24,7 @@ def test_atomic_write(tmpdir):
 def test_teardown(tmpdir):
     fname = tmpdir.join('ha')
     with pytest.raises(AssertionError):
-        with atomic_write(str(fname), overwrite=True) as f:
+        with atomic_write(str(fname), overwrite=True):
             assert False
 
     assert not tmpdir.listdir()
