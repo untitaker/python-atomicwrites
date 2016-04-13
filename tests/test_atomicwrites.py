@@ -1,3 +1,4 @@
+import os
 import errno
 
 from atomicwrites import atomic_write
@@ -38,6 +39,17 @@ def test_replace_simultaneously_created_file(tmpdir):
         assert fname.read() == 'harhar'
     assert fname.read() == 'hoho'
     assert len(tmpdir.listdir()) == 1
+
+
+def test_replace_keep_mode_unchanged(tmpdir):
+    fname = tmpdir.join('ha')
+    fname.write('abc')
+    os.chmod(str(fname), 0640)
+    f_mode_before = os.stat(str(fname)).st_mode
+    with atomic_write(str(fname), overwrite=True) as f:
+        f.write('hoho')
+    f_mode_after = os.stat(str(fname)).st_mode
+    assert f_mode_before == f_mode_after
 
 
 def test_dont_remove_simultaneously_created_file(tmpdir):

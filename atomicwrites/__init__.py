@@ -20,6 +20,8 @@ def _path_to_unicode(x):
 
 if sys.platform != 'win32':
     def _replace_atomic(src, dst):
+        if os.path.exists(dst):
+            os.chmod(src, os.stat(dst).st_mode)
         os.rename(src, dst)
 
     def _move_atomic(src, dst):
