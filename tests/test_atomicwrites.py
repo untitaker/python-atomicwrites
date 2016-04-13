@@ -44,7 +44,7 @@ def test_replace_simultaneously_created_file(tmpdir):
 def test_replace_keep_mode_unchanged(tmpdir):
     fname = tmpdir.join('ha')
     fname.write('abc')
-    os.chmod(str(fname), 0640)
+    os.chmod(str(fname), 0o640)
     f_mode_before = os.stat(str(fname)).st_mode
     with atomic_write(str(fname), overwrite=True) as f:
         f.write('hoho')
