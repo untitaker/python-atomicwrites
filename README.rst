@@ -49,6 +49,10 @@ Note that with ``link`` and ``unlink``, there's a timewindow where the file
 might be available under two entries in the filesystem: The name of the
 temporary file, and the name of the target file.
 
+Also note that the permissions of the target file may change this way. In some
+situations a ``chmod`` can be issued without any concurrency problems, but
+since that is not always the case, this library doesn't do it by itself.
+
 .. _MSDN: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365240%28v=vs.85%29.aspx
 
 Alternatives and Credit
