@@ -1,5 +1,4 @@
 import contextlib
-import errno
 import os
 import sys
 import tempfile
