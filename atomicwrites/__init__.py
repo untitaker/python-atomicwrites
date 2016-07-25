@@ -19,12 +19,23 @@ def _path_to_unicode(x):
 
 
 if sys.platform != 'win32':
+    def _sync_directory(dst):
+        # Ensure that filenames are written to disk
+        fd = os.open(os.path.dirname(dst), 0)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+
     def _replace_atomic(src, dst):
         os.rename(src, dst)
+        _sync_directory(dst)
 
     def _move_atomic(src, dst):
         os.link(src, dst)
         os.unlink(src)
+        _sync_directory(dst)
+        _sync_directory(src)
 else:
     from ctypes import windll, WinError
 
