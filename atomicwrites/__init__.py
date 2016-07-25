@@ -35,7 +35,7 @@ if sys.platform != 'win32':
         os.link(src, dst)
         os.unlink(src)
 
-        src_dir = os.path.dirname(dst)
+        src_dir = os.path.dirname(src)
         dst_dir = os.path.dirname(dst)
         _sync_directory(dst_dir)
         if src_dir != dst_dir:
