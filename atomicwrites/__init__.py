@@ -3,6 +3,11 @@ import os
 import sys
 import tempfile
 
+try:
+    import fcntl
+except ImportError:
+    fcntl = None
+
 __version__ = '1.0.0'
 
 
@@ -17,12 +22,22 @@ def _path_to_unicode(x):
     return x
 
 
+_proper_fsync = os.fsync
+
+
 if sys.platform != 'win32':
+    if hasattr(fcntl, 'F_FULLFSYNC'):
+        def _proper_fsync(fd):
+            # https://lists.apple.com/archives/darwin-dev/2005/Feb/msg00072.html
+            # https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man2/fsync.2.html
+            # https://github.com/untitaker/python-atomicwrites/issues/6
+            fcntl.fcntl(fd, fcntl.F_FULLFSYNC)
+
     def _sync_directory(directory):
         # Ensure that filenames are written to disk
         fd = os.open(directory, 0)
         try:
-            os.fsync(fd)
+            _proper_fsync(fd)
         finally:
             os.close(fd)
 
@@ -154,7 +169,7 @@ class AtomicWriter(object):
         '''responsible for clearing as many file caches as possible before
         commit'''
         f.flush()
-        os.fsync(f.fileno())
+        _proper_fsync(f.fileno())
 
     def commit(self, f):
         '''Move the temporary file to the target location.'''
