@@ -8,7 +8,7 @@ __version__ = '1.0.0'
 
 PY2 = sys.version_info[0] == 2
 
-text_type = unicode if PY2 else str
+text_type = unicode if PY2 else str  # noqa
 
 
 def _path_to_unicode(x):
