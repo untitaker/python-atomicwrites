@@ -1,11 +1,15 @@
 sudo: false
 os: linux
 language: python
+env:
+    - TOXENV_SUFFIX=test
+    - TOXENV_SUFFIX=stylecheck
 
 matrix:
     include:
         - os: osx
           language: generic
+          env: TOXENV_SUFFIX=test
 
 python:
     - "2.6"
@@ -22,7 +26,9 @@ install:
           brew install python3;
           virtualenv -p python3 $HOME/osx-py3;
           . $HOME/osx-py3/bin/activate;
+          export TRAVIS_PYTHON_VERSION="$(python --version | cut -d ' ' -f 2 | cut -d . -f -2)";
       fi
     - pip install tox
 
-script: tox
+script:
+    - tox -e $(echo py$TRAVIS_PYTHON_VERSION | tr -d . | sed -e 's/pypypy/pypy/')-$TOXENV_SUFFIX
