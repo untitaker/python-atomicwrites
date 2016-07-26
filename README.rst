@@ -42,8 +42,8 @@ that the temporary file resides on the same filesystem.
 
 The temporary file will then be atomically moved to the target location: On
 POSIX, it will use ``rename`` if files should be overwritten, otherwise a
-combination of ``link`` and ``unlink``. On Windows, it uses ``MoveFileEx`` (see
-MSDN_) through stdlib's ``ctypes`` with the appropriate flags.
+combination of ``link`` and ``unlink``. On Windows, it uses MoveFileEx_ through
+stdlib's ``ctypes`` with the appropriate flags.
 
 Note that with ``link`` and ``unlink``, there's a timewindow where the file
 might be available under two entries in the filesystem: The name of the
@@ -53,7 +53,21 @@ Also note that the permissions of the target file may change this way. In some
 situations a ``chmod`` can be issued without any concurrency problems, but
 since that is not always the case, this library doesn't do it by itself.
 
-.. _MSDN: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365240%28v=vs.85%29.aspx
+.. _MoveFileEx: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365240%28v=vs.85%29.aspx
+
+fsync
+-----
+
+On POSIX, ``fsync`` is invoked on the temporary file after it is written (to
+flush file content and metadata), and on the parent directory after the file is
+moved (to flush filename).
+
+``fsync`` does not take care of disks' internal buffers, but there don't seem
+to be any standard POSIX APIs for that. On OS X, ``fcntl`` is used with
+``F_FULLFSYNC`` instead of ``fsync`` for that reason.
+
+On Windows, `_commit <https://msdn.microsoft.com/en-us/library/17618685.aspx>`_
+is used, but there are no guarantees about disk internal buffers.
 
 Alternatives and Credit
 =======================
