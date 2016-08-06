@@ -65,3 +65,24 @@ def test_open_reraise(tmpdir):
             f.name = "asdf"
             # Now trigger our own exception.
             assert False, "Intentional failure for testing purposes"
+
+
+def test_atomic_write_in_pwd(tmpdir):
+    curdir= os.getcwd()
+    try:
+        os.chdir(tmpdir)
+        fname = 'ha'
+        for i in range(2):
+            with atomic_write(str(fname), overwrite=True) as f:
+                f.write('hoho')
+
+        with pytest.raises(OSError) as excinfo:
+            with atomic_write(str(fname), overwrite=False) as f:
+                f.write('haha')
+
+        assert excinfo.value.errno == errno.EEXIST
+
+        assert fname.read() == 'hoho'
+        assert len(tmpdir.listdir()) == 1
+    finally:
+        os.chdir(curdir)
