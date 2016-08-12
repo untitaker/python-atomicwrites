@@ -1,4 +1,5 @@
 import errno
+import os
 
 from atomicwrites import atomic_write
 
@@ -68,7 +69,7 @@ def test_open_reraise(tmpdir):
 
 
 def test_atomic_write_in_pwd(tmpdir):
-    curdir= os.getcwd()
+    orig_curdir= os.getcwd()
     try:
         os.chdir(tmpdir)
         fname = 'ha'
@@ -85,4 +86,4 @@ def test_atomic_write_in_pwd(tmpdir):
         assert fname.read() == 'hoho'
         assert len(tmpdir.listdir()) == 1
     finally:
-        os.chdir(curdir)
+        os.chdir(orig_curdir)
