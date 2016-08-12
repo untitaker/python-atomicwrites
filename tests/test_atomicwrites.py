@@ -71,7 +71,7 @@ def test_open_reraise(tmpdir):
 def test_atomic_write_in_pwd(tmpdir):
     orig_curdir= os.getcwd()
     try:
-        os.chdir(tmpdir)
+        os.chdir(str(tmpdir))
         fname = 'ha'
         for i in range(2):
             with atomic_write(str(fname), overwrite=True) as f:
@@ -83,7 +83,7 @@ def test_atomic_write_in_pwd(tmpdir):
 
         assert excinfo.value.errno == errno.EEXIST
 
-        assert fname.read() == 'hoho'
+        assert open(fname).read() == 'hoho'
         assert len(tmpdir.listdir()) == 1
     finally:
         os.chdir(orig_curdir)
