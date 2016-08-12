@@ -22,18 +22,6 @@ def _path_to_unicode(x):
     return x
 
 
-def dirname(p):
-    '''Like os.path.dirname but returns '.' in place of ''.
-
-    Compare: os.path.dirname('hello.txt'), dirname('hello.txt').
-
-    '''
-    dn = os.path.dirname(p)
-    if dn == '':
-        return '.'
-    else:
-        return dn
-
 _proper_fsync = os.fsync
 
 
@@ -55,14 +43,14 @@ if sys.platform != 'win32':
 
     def _replace_atomic(src, dst):
         os.rename(src, dst)
-        _sync_directory(dirname(dst))
+        _sync_directory(os.path.normpath(os.path.dirname(dst)))
 
     def _move_atomic(src, dst):
         os.link(src, dst)
         os.unlink(src)
 
-        src_dir = dirname(src)
-        dst_dir = dirname(dst)
+        src_dir = os.path.normpath(os.path.dirname(src))
+        dst_dir = os.path.normpath(os.path.dirname(dst))
         _sync_directory(dst_dir)
         if src_dir != dst_dir:
             _sync_directory(src_dir)
@@ -173,7 +161,7 @@ class AtomicWriter(object):
     def get_fileobject(self, dir=None, **kwargs):
         '''Return the temporary file to use.'''
         if dir is None:
-            dir = dirname(self._path)
+            dir = os.path.normpath(os.path.dirname(self._path))
         return tempfile.NamedTemporaryFile(mode=self._mode, dir=dir,
                                            delete=False, **kwargs)
 
