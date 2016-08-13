@@ -69,7 +69,7 @@ def test_open_reraise(tmpdir):
 
 
 def test_atomic_write_in_pwd(tmpdir):
-    orig_curdir= os.getcwd()
+    orig_curdir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
         fname = 'ha'
