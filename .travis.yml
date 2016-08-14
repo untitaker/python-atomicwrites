@@ -1,9 +1,6 @@
 sudo: false
 os: linux
 language: python
-env:
-    - TOXENV_SUFFIX=test
-    - TOXENV_SUFFIX=stylecheck
 
 matrix:
     include:
@@ -31,4 +28,8 @@ install:
     - pip install tox
 
 script:
-    - tox -e $(echo py$TRAVIS_PYTHON_VERSION | tr -d . | sed -e 's/pypypy/pypy/')-$TOXENV_SUFFIX
+    - export TOX_PY="$(echo py$TRAVIS_PYTHON_VERSION | tr -d . | sed -e 's/pypypy/pypy/')"
+    - tox -e $TOX_PY-test
+    - if [ "$TRAVIS_PYTHON_VERSION" = "2.7" ] || [ "$TRAVIS_PYTHON_VERSION" = ".3.5" ]; then
+          tox -e $TOX_PY-stylecheck;
+      fi
