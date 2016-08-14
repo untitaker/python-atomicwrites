@@ -43,14 +43,14 @@ if sys.platform != 'win32':
 
     def _replace_atomic(src, dst):
         os.rename(src, dst)
-        _sync_directory(os.path.dirname(dst))
+        _sync_directory(os.path.normpath(os.path.dirname(dst)))
 
     def _move_atomic(src, dst):
         os.link(src, dst)
         os.unlink(src)
 
-        src_dir = os.path.dirname(src)
-        dst_dir = os.path.dirname(dst)
+        src_dir = os.path.normpath(os.path.dirname(src))
+        dst_dir = os.path.normpath(os.path.dirname(dst))
         _sync_directory(dst_dir)
         if src_dir != dst_dir:
             _sync_directory(src_dir)
@@ -161,7 +161,7 @@ class AtomicWriter(object):
     def get_fileobject(self, dir=None, **kwargs):
         '''Return the temporary file to use.'''
         if dir is None:
-            dir = os.path.dirname(self._path)
+            dir = os.path.normpath(os.path.dirname(self._path))
         return tempfile.NamedTemporaryFile(mode=self._mode, dir=dir,
                                            delete=False, **kwargs)
 
