@@ -27,7 +27,28 @@ Features that distinguish it from other similar libraries (see `Alternatives and
   controlled with the ``overwrite`` parameter.
 
 - Windows support, although not well-tested. The MSDN resources are not very
-  explicit about which operations are atomic.
+  explicit about which operations are atomic. I'm basing my assumptions off `a
+  comment
+  <https://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/449bb49d-8acc-48dc-a46f-0760ceddbfc3/movefileexmovefilereplaceexisting-ntfs-same-volume-atomic?forum=windowssdk#a239bc26-eaf0-4920-9f21-440bd2be9cc8>`_
+  by `Doug Crook
+  <https://social.msdn.microsoft.com/Profile/doug%20e.%20cook>`_, who appears
+  to be a Microsoft employee:
+
+      FAQ: Is MoveFileEx atomic
+      Frequently asked question: Is MoveFileEx atomic if the existing and new
+      files are both on the same drive?
+
+      The simple answer is "usually, but in some cases it will silently fall-back
+      to a non-atomic method, so don't count on it".
+
+      The implementation of MoveFileEx looks something like this: [...]
+
+      The problem is if the rename fails, you might end up with a CopyFile, which
+      is definitely not atomic.
+
+      If you really need atomic-or-nothing, you can try calling
+      NtSetInformationFile, which is unsupported but is much more likely to be
+      atomic. 
 
 - Simple high-level API that wraps a very flexible class-based API.
 
