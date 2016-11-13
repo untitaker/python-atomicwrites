@@ -24,4 +24,5 @@ setup(
     long_description=open('README.rst').read(),
     packages=find_packages(exclude=['tests.*', 'tests']),
     include_package_data=True,
+    install_requires=['typing'],
 )
