@@ -21,7 +21,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'atomicwrites'
-copyright = '2015, Markus Unterwaditzer'
+copyright = '2015-2017, Markus Unterwaditzer'
 
 try:
     # The full version, including alpha/beta/rc tags.
