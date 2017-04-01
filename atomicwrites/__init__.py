@@ -42,6 +42,8 @@ if sys.platform != 'win32':
             os.close(fd)
 
     def _replace_atomic(src, dst):
+        if os.path.exists(dst):
+            os.chmod(src, os.stat(dst).st_mode)
         os.rename(src, dst)
         _sync_directory(os.path.normpath(os.path.dirname(dst)))
 
