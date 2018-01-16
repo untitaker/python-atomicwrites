@@ -42,7 +42,10 @@ if sys.platform != 'win32':
             os.close(fd)
 
     def _replace_atomic(src, dst):
-        os.rename(src, dst)
+        try:
+            os.replace(src, dst)
+        except:
+            os.rename(src, dst)
         _sync_directory(os.path.normpath(os.path.dirname(dst)))
 
     def _move_atomic(src, dst):
