@@ -1,4 +1,5 @@
 import contextlib
+import errno
 import os
 import sys
 import tempfile
@@ -35,9 +36,14 @@ if sys.platform != 'win32':
 
     def _sync_directory(directory):
         # Ensure that filenames are written to disk
-        fd = os.open(directory, 0)
+        fd = os.open(directory, os.O_RDONLY)
         try:
             _proper_fsync(fd)
+        except OSError as os_error:
+            # Some network filesystems don't support this and fail with EINVAL.
+            # Other error codes (e.g. EIO) shouldn't be silenced.
+            if os_error.errno != errno.EINVAL:
+                raise
         finally:
             os.close(fd)
 
