@@ -23,7 +23,7 @@ matrix:
           before_install:
             - brew update
             - brew upgrade python
-            - virtualenv $HOME/osx-py3 -p python3
+            - python3 -m venv $HOME/osx-py3
             - source $HOME/osx-py3/bin/activate
         - python: 2.7
           env: TOXENV=stylecheck
