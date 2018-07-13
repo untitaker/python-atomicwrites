@@ -22,7 +22,7 @@ matrix:
           env: TOXENV=test
           before_install:
             - brew update
-            - brew install python3
+            - brew upgrade python
             - virtualenv $HOME/osx-py3 -p python3
             - source $HOME/osx-py3/bin/activate
         - python: 2.7
