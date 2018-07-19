@@ -23,8 +23,6 @@ matrix:
           before_install:
             - brew update
             - brew upgrade python
-            - sudo easy_install pip
-            - pip install --user virtualenv
             - virtualenv $HOME/osx-py
             - source $HOME/osx-py/bin/activate
         - python: 2.7
