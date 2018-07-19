@@ -23,7 +23,8 @@ matrix:
           before_install:
             - brew update
             - brew upgrade python
-            - python -m venv $HOME/osx-py
+            - pip install --user virtualenv
+            - virtualenv $HOME/osx-py
             - source $HOME/osx-py/bin/activate
         - python: 2.7
           env: TOXENV=stylecheck
