@@ -23,8 +23,9 @@ matrix:
           before_install:
             - brew update
             - brew upgrade python
-            - python3 -m venv $HOME/osx-py3
-            - source $HOME/osx-py3/bin/activate
+            - python3 -m pip install --user virtualenv
+            - /Users/travis/Library/Python/3.7/bin/virtualenv $HOME/osx-py
+            - source $HOME/osx-py/bin/activate
         - python: 2.7
           env: TOXENV=stylecheck
         - python: 3.6
