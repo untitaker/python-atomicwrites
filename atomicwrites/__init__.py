@@ -199,3 +199,68 @@ def atomic_write(path, writer_cls=AtomicWriter, **cls_kwargs):
     :py:class:`AtomicWriter`.
     '''
     return writer_cls(path, **cls_kwargs).open()
+
+
+
+###############################################################################
+# Atomic folder
+import os
+from os.path import dirname, basename
+import shutil
+
+
+class FolderAlreadyExists(Exception): pass
+
+
+class AtomicFolder():
+    """
+    Simulate atomic operations when creating data in a folder.
+
+    Basically create a temp folder, do all work in there, rename_dont_move the
+    temp folder to the given destination when everything is done.
+
+    Args:
+        dst_folder: the location of the final folder
+        delete_on_failure: delete the temp folder on any failure
+
+    Example:
+        >>> from tempfile import TemporaryDirectory
+        >>> with TemporaryDirectory() as base_path:
+        ...     dst = os.path.join(base_path, "atomic")
+        ...     with AtomicFolder(dst) as path:
+        ...         # do the work; dst does not exist yet
+        ...         pass
+        ...     # now dst exists
+    """
+    def __init__(self, dst_folder: str, delete_on_failure=True):
+        self.dst_folder = dst_folder
+        self.delete_on_failure = delete_on_failure
+        self.tmp_folder = self.to_tmp(dst_folder)
+
+    def __enter__(self):
+        if os.path.exists(self.dst_folder):
+            raise FolderAlreadyExists(self.dst_folder)
+        os.makedirs(self.tmp_folder, exist_ok=False)
+        return self.tmp_folder
+
+    def __exit__(self, exc_type, exc, exc_tb):
+        if exc_type is None:
+            rename_dont_move(self.tmp_folder, self.dst_folder)
+        if exc_type and self.delete_on_failure:
+            shutil.rmtree(self.tmp_folder)
+        return False  # TODO propagate exception
+
+    @staticmethod
+    def to_tmp(dst_folder):
+        return os.path.join(dirname(dst_folder), ".tmp_" + basename(dst_folder))
+
+
+def rename_dont_move(path: str, dst: str):
+    """
+    Rename path to dst only if dst does not exist.
+
+    See http://luigi.readthedocs.io/en/stable/_modules/luigi/target.html#FileSystem.rename_dont_move
+    """
+    if os.path.isdir(dst):
+        raise FolderAlreadyExists(f"'{dst}' already exists")
+    shutil.move(path, dst)
