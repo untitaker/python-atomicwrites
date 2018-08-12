@@ -232,7 +232,7 @@ class AtomicFolder():
         ...         pass
         ...     # now dst exists
     """
-    def __init__(self, dst_folder: str, delete_on_failure=True):
+    def __init__(self, dst_folder, delete_on_failure=True):
         self.dst_folder = dst_folder
         self.delete_on_failure = delete_on_failure
         self.tmp_folder = self.to_tmp(dst_folder)
@@ -255,7 +255,7 @@ class AtomicFolder():
         return os.path.join(dirname(dst_folder), ".tmp_" + basename(dst_folder))
 
 
-def rename_dont_move(path: str, dst: str):
+def rename_dont_move(path, dst):
     """
     Rename path to dst only if dst does not exist.
 
