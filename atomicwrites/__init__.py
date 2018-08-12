@@ -262,5 +262,5 @@ def rename_dont_move(path: str, dst: str):
     See http://luigi.readthedocs.io/en/stable/_modules/luigi/target.html#FileSystem.rename_dont_move
     """
     if os.path.isdir(dst):
-        raise FolderAlreadyExists(f"'{dst}' already exists")
+        raise FolderAlreadyExists("'{}' already exists".format(dst))
     shutil.move(path, dst)
