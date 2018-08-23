@@ -118,7 +118,7 @@ class AtomicWriter(object):
     subclass.
     '''
 
-    def __init__(self, path, mode='w', overwrite=False):
+    def __init__(self, path, mode='w', overwrite=False, **tempfile_kwargs):
         if 'a' in mode:
             raise ValueError(
                 'Appending to an existing file is not supported, because that '
@@ -134,6 +134,7 @@ class AtomicWriter(object):
         self._path = path
         self._mode = mode
         self._overwrite = overwrite
+        self._tempfile_kwargs = tempfile_kwargs
 
     def open(self):
         '''
@@ -146,7 +147,7 @@ class AtomicWriter(object):
         f = None  # make sure f exists even if get_fileobject() fails
         try:
             success = False
-            with get_fileobject() as f:
+            with get_fileobject(**self._tempfile_kwargs) as f:
                 yield f
                 self.sync(f)
             self.commit(f)
@@ -162,8 +163,10 @@ class AtomicWriter(object):
         '''Return the temporary file to use.'''
         if dir is None:
             dir = os.path.normpath(os.path.dirname(self._path))
-        return tempfile.NamedTemporaryFile(mode=self._mode, dir=dir,
-                                           delete=False, **kwargs)
+        kwargs['dir'] = dir
+        kwargs['delete'] = False
+        kwargs['mode'] = self._mode
+        return tempfile.NamedTemporaryFile(**kwargs)
 
     def sync(self, f):
         '''responsible for clearing as many file caches as possible before
