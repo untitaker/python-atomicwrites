@@ -60,10 +60,10 @@ def test_open_reraise(tmpdir):
     fname = tmpdir.join('ha')
     with pytest.raises(AssertionError):
         with atomic_write(str(fname), overwrite=False) as f:
-            # Mess with f, so rollback will trigger an OSError. We're testing
+            # Mess with f, so commit will trigger a ValueError. We're testing
             # that the initial AssertionError triggered below is propagated up
-            # the stack, not the second exception triggered during rollback.
-            f.name = "asdf"
+            # the stack, not the second exception triggered during commit.
+            f.close()
             # Now trigger our own exception.
             assert False, "Intentional failure for testing purposes"
 
