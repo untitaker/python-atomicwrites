@@ -10,11 +10,11 @@ def test_atomic_write(tmpdir):
     fname = tmpdir.join('ha')
     for i in range(2):
         with atomic_write(str(fname), overwrite=True) as f:
-            f.write(u'hoho')
+            f.write('hoho')
 
     with pytest.raises(OSError) as excinfo:
         with atomic_write(str(fname), overwrite=False) as f:
-            f.write(u'haha')
+            f.write('haha')
 
     assert excinfo.value.errno == errno.EEXIST
 
@@ -34,7 +34,7 @@ def test_teardown(tmpdir):
 def test_replace_simultaneously_created_file(tmpdir):
     fname = tmpdir.join('ha')
     with atomic_write(str(fname), overwrite=True) as f:
-        f.write(u'hoho')
+        f.write('hoho')
         fname.write('harhar')
         assert fname.read() == 'harhar'
     assert fname.read() == 'hoho'
@@ -45,7 +45,7 @@ def test_dont_remove_simultaneously_created_file(tmpdir):
     fname = tmpdir.join('ha')
     with pytest.raises(OSError) as excinfo:
         with atomic_write(str(fname), overwrite=False) as f:
-            f.write(u'hoho')
+            f.write('hoho')
             fname.write('harhar')
             assert fname.read() == 'harhar'
 
@@ -59,11 +59,13 @@ def test_dont_remove_simultaneously_created_file(tmpdir):
 def test_open_reraise(tmpdir):
     fname = tmpdir.join('ha')
     with pytest.raises(AssertionError):
-        with atomic_write(str(fname), overwrite=False) as f:
-            # Mess with f, so commit will trigger a ValueError. We're testing
-            # that the initial AssertionError triggered below is propagated up
-            # the stack, not the second exception triggered during commit.
-            f.close()
+        aw = atomic_write(str(fname), overwrite=False)
+        with aw:
+            # Mess with internals, so commit will trigger a ValueError. We're
+            # testing that the initial AssertionError triggered below is
+            # propagated up the stack, not the second exception triggered
+            # during commit.
+            aw.rollback = lambda: 1 / 0
             # Now trigger our own exception.
             assert False, "Intentional failure for testing purposes"
 
@@ -75,11 +77,11 @@ def test_atomic_write_in_pwd(tmpdir):
         fname = 'ha'
         for i in range(2):
             with atomic_write(str(fname), overwrite=True) as f:
-                f.write(u'hoho')
+                f.write('hoho')
 
         with pytest.raises(OSError) as excinfo:
             with atomic_write(str(fname), overwrite=False) as f:
-                f.write(u'haha')
+                f.write('haha')
 
         assert excinfo.value.errno == errno.EEXIST
 

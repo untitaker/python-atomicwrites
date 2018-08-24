@@ -9,7 +9,7 @@ try:
 except ImportError:
     fcntl = None
 
-__version__ = '1.1.5'
+__version__ = '1.2.0'
 
 
 PY2 = sys.version_info[0] == 2
@@ -21,6 +21,9 @@ def _path_to_unicode(x):
     if not isinstance(x, text_type):
         return x.decode(sys.getfilesystemencoding())
     return x
+
+
+DEFAULT_MODE = "wb" if PY2 else "w"
 
 
 _proper_fsync = os.fsync
@@ -110,7 +113,8 @@ class AtomicWriter(object):
             f.write(...)
 
     :param path: The destination filepath. May or may not exist.
-    :param mode: The filemode for the temporary file.
+    :param mode: The filemode for the temporary file. This defaults to `wb` in
+        Python 2 and `w` in Python 3.
     :param overwrite: If set to false, an error is raised if ``path`` exists.
         Errors are only raised after the file has been written to.  Either way,
         the operation is atomic.
@@ -119,7 +123,8 @@ class AtomicWriter(object):
     subclass.
     '''
 
-    def __init__(self, path, mode='w', overwrite=False, **open_kwargs):
+    def __init__(self, path, mode=DEFAULT_MODE, overwrite=False,
+                 **open_kwargs):
         if 'a' in mode:
             raise ValueError(
                 'Appending to an existing file is not supported, because that '
