@@ -1,4 +1,5 @@
 import contextlib
+import io
 import os
 import sys
 import tempfile
@@ -118,7 +119,7 @@ class AtomicWriter(object):
     subclass.
     '''
 
-    def __init__(self, path, mode='w', overwrite=False):
+    def __init__(self, path, mode='w', overwrite=False, **open_kwargs):
         if 'a' in mode:
             raise ValueError(
                 'Appending to an existing file is not supported, because that '
@@ -134,6 +135,7 @@ class AtomicWriter(object):
         self._path = path
         self._mode = mode
         self._overwrite = overwrite
+        self._open_kwargs = open_kwargs
 
     def open(self):
         '''
@@ -146,7 +148,7 @@ class AtomicWriter(object):
         f = None  # make sure f exists even if get_fileobject() fails
         try:
             success = False
-            with get_fileobject() as f:
+            with get_fileobject(**self._open_kwargs) as f:
                 yield f
                 self.sync(f)
             self.commit(f)
@@ -162,8 +164,14 @@ class AtomicWriter(object):
         '''Return the temporary file to use.'''
         if dir is None:
             dir = os.path.normpath(os.path.dirname(self._path))
-        return tempfile.NamedTemporaryFile(mode=self._mode, dir=dir,
-                                           delete=False, **kwargs)
+        descriptor, name = tempfile.mkstemp(dir=dir)
+        # io.open() will take either the descriptor or the name, but we need
+        # the name later for commit()/replace_atomic() and couldn't find a way
+        # to get the filename from the descriptor.
+        os.close(descriptor)
+        kwargs['mode'] = self._mode
+        kwargs['file'] = name
+        return io.open(**kwargs)
 
     def sync(self, f):
         '''responsible for clearing as many file caches as possible before
