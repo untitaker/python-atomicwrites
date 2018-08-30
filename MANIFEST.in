@@ -3,4 +3,6 @@ include README.rst
 
 recursive-include docs *
 recursive-include tests *
+
 prune docs/_build
+global-exclude *.py[cdo] __pycache__ *.so *.pyd
