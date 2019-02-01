@@ -9,7 +9,7 @@ try:
 except ImportError:
     fcntl = None
 
-__version__ = '1.2.1'
+__version__ = '1.3.0'
 
 
 PY2 = sys.version_info[0] == 2
