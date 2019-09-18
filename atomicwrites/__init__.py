@@ -2,8 +2,8 @@ import contextlib
 import io
 import os
 import sys
-import time
 import tempfile
+import time
 
 try:
     import fcntl
@@ -152,11 +152,11 @@ class AtomicWriter(object):
     @contextlib.contextmanager
     def _open(self, get_fileobject):
         f = None  # make sure f exists even if get_fileobject() fails
-        fname = None
+        f_name = None
         success = False
         try:
             with get_fileobject(**self._open_kwargs) as f:
-                fname = f.name
+                f_name = f.name
                 yield f
                 self.sync(f)
                 f.close()
@@ -169,7 +169,7 @@ class AtomicWriter(object):
                 except Exception:
                     pass
 
-            base_dir = os.path.split(fname)[0]
+            base_dir = os.path.split(f_name)[0]
             for file_name in os.listdir(base_dir):
                 try:
                     if file_name.endswith("atm_tmp"):
@@ -177,13 +177,13 @@ class AtomicWriter(object):
                         if time.time() - os.path.getmtime(file_full_path) > 60:
                             try:
                                 os.unlink(file_full_path)
-                            except:
+                            except Exception:
                                 pass
-                except:
+                except Exception:
                     pass
 
-    def get_fileobject(self, suffix=".atm_tmp", prefix=tempfile.template, dir=None,
-                       **kwargs):
+    def get_fileobject(self, suffix=".atm_tmp", prefix=tempfile.template,
+                       dir=None, **kwargs):
         '''Return the temporary file to use.'''
         if dir is None:
             dir = os.path.normpath(os.path.dirname(self._path))
