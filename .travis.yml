@@ -15,17 +15,6 @@ env:
 
 matrix:
     include:
-        - # The OS X VM doesn't have any Python support at all
-          # See https://github.com/travis-ci/travis-ci/issues/2312
-          os: osx
-          language: generic
-          env: TOXENV=test
-          before_install:
-            - brew update
-            - brew upgrade python
-            - python3 -m pip install --user virtualenv
-            - /Users/travis/Library/Python/3.7/bin/virtualenv $HOME/osx-py
-            - source $HOME/osx-py/bin/activate
         - python: 2.7
           env: TOXENV=stylecheck
         - python: 3.6
