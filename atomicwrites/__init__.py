@@ -165,8 +165,8 @@ class AtomicWriter(object):
                 except Exception:
                     pass
 
-    def get_fileobject(self, suffix="", prefix=tempfile.template, dir=None,
-                       **kwargs):
+    def get_fileobject(self, suffix="", prefix=tempfile.gettempprefix(),
+                       dir=None, **kwargs):
         '''Return the temporary file to use.'''
         if dir is None:
             dir = os.path.normpath(os.path.dirname(self._path))
