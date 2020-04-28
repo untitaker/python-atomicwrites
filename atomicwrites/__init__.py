@@ -15,7 +15,7 @@ try:
 except ImportError:
     fspath = None
 
-__version__ = '1.3.0'
+__version__ = '1.4.0'
 
 
 PY2 = sys.version_info[0] == 2
