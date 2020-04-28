@@ -9,6 +9,12 @@ try:
 except ImportError:
     fcntl = None
 
+# `fspath` was added in Python 3.6
+try:
+    from os import fspath
+except ImportError:
+    fspath = None
+
 __version__ = '1.3.0'
 
 
@@ -136,6 +142,10 @@ class AtomicWriter(object):
             raise ValueError('Use the `overwrite`-parameter instead.')
         if 'w' not in mode:
             raise ValueError('AtomicWriters can only be written to.')
+
+        # Attempt to convert `path` to `str` or `bytes`
+        if fspath is not None:
+            path = fspath(path)
 
         self._path = path
         self._mode = mode
