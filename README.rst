@@ -34,8 +34,7 @@ Features that distinguish it from other similar libraries (see `Alternatives and
   <https://social.msdn.microsoft.com/Profile/doug%20e.%20cook>`_, who appears
   to be a Microsoft employee:
 
-      FAQ: Is MoveFileEx atomic
-      Frequently asked question: Is MoveFileEx atomic if the existing and new
+      Question: Is MoveFileEx atomic if the existing and new
       files are both on the same drive?
 
       The simple answer is "usually, but in some cases it will silently fall-back
