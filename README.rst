@@ -20,7 +20,7 @@ Atomic file writes.
 
     # Now it does.
     
-See [API documentation](https://python-atomicwrites.readthedocs.io/en/latest/#api) for more
+See `API documentation <https://python-atomicwrites.readthedocs.io/en/latest/#api>`_ for more
 low-level interfaces.
 
 Features that distinguish it from other similar libraries (see `Alternatives and Credit`_):
