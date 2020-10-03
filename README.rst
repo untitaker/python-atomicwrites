@@ -19,7 +19,9 @@ Atomic file writes.
         # "foo.txt" doesn't exist yet.
 
     # Now it does.
-
+    
+See [API documentation](https://python-atomicwrites.readthedocs.io/en/latest/#api) for more
+low-level interfaces.
 
 Features that distinguish it from other similar libraries (see `Alternatives and Credit`_):
 
