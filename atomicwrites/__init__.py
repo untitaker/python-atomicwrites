@@ -124,9 +124,9 @@ class AtomicWriter(object):
     :param overwrite: If set to false, an error is raised if ``path`` exists.
         Errors are only raised after the file has been written to.  Either way,
         the operation is atomic.
-    :param open_kwargs: Keyword-arguments to pass to the underlying :py:func:`open`
-        call. This can be used to set the encoding when opening files in
-        text-mode.
+    :param open_kwargs: Keyword-arguments to pass to the underlying
+        :py:func:`open` call. This can be used to set the encoding when opening
+        files in text-mode.
 
     If you need further control over the exact behavior, you are encouraged to
     subclass.
