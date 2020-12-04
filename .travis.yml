@@ -1,6 +1,10 @@
 os: linux
 language: python
 
+arch:
+    - amd64
+    - ppc64le
+
 python:
     - 2.7
     - pypy
@@ -19,8 +23,17 @@ matrix:
           env: TOXENV=stylecheck
         - python: 3.6
           env: TOXENV=stylecheck
-
-
+        #Adding power support architecture
+        - python: 2.7
+          env: TOXENV=stylecheck
+          arch: ppc64le
+        - python: 3.6
+          env: TOXENV=stylecheck
+          arch: ppc64le
+    exclude:
+         - python: pypy
+           arch: ppc64le
+            
 install:
     - pip install tox
 
