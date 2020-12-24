@@ -6,32 +6,25 @@ arch:
     - ppc64le
 
 python:
-    - 2.7
-    - pypy
-    - 3.4
-    - 3.5
+    - pypy3
     - 3.6
     - 3.7
     - 3.8
+    - 3.9
 
 env:
     - TOXENV=test
 
 matrix:
     include:
-        - python: 2.7
-          env: TOXENV=stylecheck
         - python: 3.6
           env: TOXENV=stylecheck
         #Adding power support architecture
-        - python: 2.7
-          env: TOXENV=stylecheck
-          arch: ppc64le
         - python: 3.6
           env: TOXENV=stylecheck
           arch: ppc64le
     exclude:
-         - python: pypy
+         - python: pypy3
            arch: ppc64le
             
 install:

@@ -1,35 +1,21 @@
 import contextlib
-import io
 import os
 import sys
 import tempfile
+from os import fspath
 
 try:
     import fcntl
 except ImportError:
     fcntl = None
 
-# `fspath` was added in Python 3.6
-try:
-    from os import fspath
-except ImportError:
-    fspath = None
-
 __version__ = '1.4.0'
 
 
-PY2 = sys.version_info[0] == 2
-
-text_type = unicode if PY2 else str  # noqa
-
-
 def _path_to_unicode(x):
-    if not isinstance(x, text_type):
+    if not isinstance(x, str):
         return x.decode(sys.getfilesystemencoding())
     return x
-
-
-DEFAULT_MODE = "wb" if PY2 else "w"
 
 
 _proper_fsync = os.fsync
@@ -111,7 +97,7 @@ def move_atomic(src, dst):
     return _move_atomic(src, dst)
 
 
-class AtomicWriter(object):
+class AtomicWriter:
     '''
     A helper class for performing atomic writes. Usage::
 
@@ -132,7 +118,7 @@ class AtomicWriter(object):
     subclass.
     '''
 
-    def __init__(self, path, mode=DEFAULT_MODE, overwrite=False,
+    def __init__(self, path, mode="w", overwrite=False,
                  **open_kwargs):
         if 'a' in mode:
             raise ValueError(
@@ -191,7 +177,7 @@ class AtomicWriter(object):
         os.close(descriptor)
         kwargs['mode'] = self._mode
         kwargs['file'] = name
-        return io.open(**kwargs)
+        return open(**kwargs)
 
     def sync(self, f):
         '''responsible for clearing as many file caches as possible before
