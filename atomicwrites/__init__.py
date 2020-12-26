@@ -217,7 +217,7 @@ class AtomicWriter(object):
                         # path that was already attempted
                         raise ValueError(
                             'path_generator must return unique values, but'
-                            f'{path} was returned multiple times.'
+                            '{} was returned multiple times.'.format(path)
                         )
                     seen.add(path)
                     try:
