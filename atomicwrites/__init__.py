@@ -125,6 +125,12 @@ class AtomicWriter(object):
     :param overwrite: If set to false, an error is raised if ``path`` exists.
         Errors are only raised after the file has been written to.  Either way,
         the operation is atomic.
+    :param path_generator: A generator function that takes the `path` as an
+        argument and returns the next path to attempt to create.  If creation
+        fails, the generator will be repeatedly called to get the next path to
+        try writing until the write succeeds or the a previously attempted path
+        is generated again.  A `ValueError` is raised if a previously attempted
+        path is provided by the generator.
     :param open_kwargs: Keyword-arguments to pass to the underlying
         :py:func:`open` call. This can be used to set the encoding when opening
         files in text-mode.
