@@ -1,8 +1,8 @@
 import contextlib
 import io
 import os
-import sys
 import errno
+import sys
 import tempfile
 
 try:
