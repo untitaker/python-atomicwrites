@@ -1,7 +1,7 @@
 import contextlib
+import errno
 import io
 import os
-import errno
 import sys
 import tempfile
 
