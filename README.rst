@@ -34,7 +34,7 @@ Features that distinguish it from other similar libraries (see `Alternatives and
   explicit about which operations are atomic. I'm basing my assumptions off `a
   comment
   <https://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/449bb49d-8acc-48dc-a46f-0760ceddbfc3/movefileexmovefilereplaceexisting-ntfs-same-volume-atomic?forum=windowssdk#a239bc26-eaf0-4920-9f21-440bd2be9cc8>`_
-  by `Doug Crook
+  by `Doug Cook
   <https://social.msdn.microsoft.com/Profile/doug%20e.%20cook>`_, who appears
   to be a Microsoft employee:
 
