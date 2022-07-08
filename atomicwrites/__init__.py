@@ -1,4 +1,5 @@
 import contextlib
+import errno
 import io
 import os
 import sys
@@ -124,6 +125,12 @@ class AtomicWriter(object):
     :param overwrite: If set to false, an error is raised if ``path`` exists.
         Errors are only raised after the file has been written to.  Either way,
         the operation is atomic.
+    :param path_generator: A generator function that takes the `path` as an
+        argument and returns the next path to attempt to create.  If creation
+        fails, the generator will be repeatedly called to get the next path to
+        try writing until the write succeeds or the a previously attempted path
+        is generated again.  A `ValueError` is raised if a previously attempted
+        path is provided by the generator.
     :param open_kwargs: Keyword-arguments to pass to the underlying
         :py:func:`open` call. This can be used to set the encoding when opening
         files in text-mode.
@@ -133,7 +140,7 @@ class AtomicWriter(object):
     '''
 
     def __init__(self, path, mode=DEFAULT_MODE, overwrite=False,
-                 **open_kwargs):
+                 path_generator=None, **open_kwargs):
         if 'a' in mode:
             raise ValueError(
                 'Appending to an existing file is not supported, because that '
@@ -153,7 +160,9 @@ class AtomicWriter(object):
         self._path = path
         self._mode = mode
         self._overwrite = overwrite
+        self._path_generator = path_generator
         self._open_kwargs = open_kwargs
+        self.final_path = None
 
     def open(self):
         '''
@@ -169,10 +178,11 @@ class AtomicWriter(object):
             with get_fileobject(**self._open_kwargs) as f:
                 yield f
                 self.sync(f)
-            self.commit(f)
+            self.final_path = self.commit(f)
             success = True
         finally:
             if not success:
+                self.final_path = None
                 try:
                     self.rollback(f)
                 except Exception:
@@ -203,8 +213,31 @@ class AtomicWriter(object):
         '''Move the temporary file to the target location.'''
         if self._overwrite:
             replace_atomic(f.name, self._path)
+            return self._path
         else:
-            move_atomic(f.name, self._path)
+            if self._path_generator is not None:
+                seen = set()
+                for path in self._path_generator(self._path):
+                    if path in seen:
+                        # avoid infinite loop if the path generator returns a
+                        # path that was already attempted
+                        raise ValueError(
+                            'path_generator must return unique values, but'
+                            '{} was returned multiple times.'.format(path)
+                        )
+                    seen.add(path)
+                    try:
+                        move_atomic(f.name, path)
+                    except OSError as exc:
+                        if exc.errno == errno.EEXIST:
+                            pass
+                        else:
+                            raise
+                    else:
+                        return path
+            else:
+                move_atomic(f.name, self._path)
+                return self._path
 
     def rollback(self, f):
         '''Clean up all temporary resources.'''
