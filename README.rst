@@ -5,7 +5,11 @@ python-atomicwrites
 Unmaintained
 ============
 
-PyPI wants me to enable 2FA just because I maintain this package, which I don't care for. So this package is now unmaintained.
+`PyPI wants me to enable 2FA just because I maintain this package
+<https://github.com/untitaker/python-atomicwrites/issues/61>`_, and both that
+and the mess resulting from a stunt of mine, I thought it'd be a good time to
+deprecate this package. Python 3 has `os.replace` and `os.rename` which
+probably do well enough of a job for most usecases.
 
 ----
 
