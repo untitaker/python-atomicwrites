@@ -2,6 +2,13 @@
 python-atomicwrites
 ===================
 
+Unmaintained
+============
+
+PyPI wants me to enable 2FA just because I maintain this package, which I don't care for. So this package is now unmaintained.
+
+----
+
 .. image:: https://travis-ci.com/untitaker/python-atomicwrites.svg?branch=master
     :target: https://travis-ci.com/untitaker/python-atomicwrites
 .. image:: https://ci.appveyor.com/api/projects/status/vadc4le3c27to59x/branch/master?svg=true
